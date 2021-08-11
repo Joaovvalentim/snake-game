@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+</head>
+
+<body>
+    <canvas id="stage" width="600" height="600"></canvas>
+    <!--Tamanho do campo-->
+    <script type="text/javascript">//script
+
+        window.onload = function () {// função onde ocorre o jogo
+
+            var stage = document.getElementById('stage');// pegando elemento do html
+            var ctx = stage.getContext("2d"); // context do stage(onde fica toda parte visual)
+            document.addEventListener("keydown", keyPush);//toda vez que uma tecla for precionada, executa a função keypush
+            
+            setInterval(game, 80); // define intervalo para função ser chamada
+
+            const vel = 1;// quantas casas a cobra anda a cada vez que a função game é chamada
+
+            var vx = vy = 0;//velocidade
+            var px = 10;//ponto de inicio
+            var py = 15;//(p = ponto)ponto de inicio
+            var tp = 30;//(t = tamanho)tamanho da peça
+            var qp = 20;//(q = quantidade)quantidade de peça
+            var ax = ay = 15;//(a = apple)posição inicial da maçã
+
+            var trail = [];//rastro da cobra
+            tail = 5;//tamanho inicial da calda
+
+            function game() {
+                px += vx;
+                py += vy;
+                if (px < 0) {//se a cobra vai para esquerda e chega na borda, ela vai para direita
+                    px = qp - 1;
+                }
+                if (px > qp - 1) {//se a cobra vai para direita e chega na borda, ela vai para esquerda
+                    px = 0;
+                }
+                if (py < 0) {//se a cobra vai para cima e chega na borda, ela vai para baixo
+                    py = qp - 1;
+                }
+                if (py > qp - 1) {//se a cobra vai para baixo e chega na borda, ela vai para cima
+                    py = 0;
+                }
+
+                ctx.fillStyle = "black"; //estilo que pinta o stage.
+                ctx.fillRect(0, 0, stage.width, stage.height);// onde começar a pintar o stage.
+
+                ctx.fillStyle = "red";// cor da maçã
+                ctx.fillRect(ax * tp, ay * tp, tp, tp);//pinta o quadrado da maçã
+
+                ctx.fillStyle = "gray";//cor da calda da obra
+                for (var i = 0; i < trail.length; i++) {
+                    ctx.fillRect(trail[i].x * tp, trail[i].y * tp, tp - 1, tp - 1);//pega a posição do rastro e pinta
+                    if (trail[i].x == px && trail[i].y == py) {//verifica se alum elemento do copo bateu nela mesma, gameover
+                        vx = vy = 0;
+                        tail = 5;
+                    }
+                }
+
+                trail.push({ x: px, y: py })//objeto que contem a posição atual
+                while (trail.length > tail) {//tira a ultima posição da cobra
+                    trail.shift();//tira o primeiro elemente do array
+                }
+
+                if (ax == px && ay == py) {//aumenta a cauda/ se a posiçaõ da cabeça for a mesma que a da mação
+                    tail++;//adiciona um elemento a calda
+                    ax = Math.floor(Math.random() * qp);//reposiciona outra maça
+                    ay = Math.floor(Math.random() * qp);
+                }
+
+            }
+
+            function keyPush(event) {//movimentação de jogo
+
+                switch (event.keyCode) {
+                    case 37: // Left
+                        vx = -vel;
+                        vy = 0;
+                        break;
+                    case 38: // up
+                        vx = 0;
+                        vy = -vel;
+                        break;
+                    case 39: // right
+                        vx = vel;
+                        vy = 0;
+                        break;
+                    case 40: // down
+                        vx = 0;
+                        vy = vel;
+                        break;
+                    default:
+
+                        break;
+                }
+
+
+            }
+
+        }
+
+    </script>
+</body>
+
+</html>
